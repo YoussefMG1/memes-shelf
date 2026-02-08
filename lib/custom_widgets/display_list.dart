@@ -1,195 +1,165 @@
-import 'dart:developer';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:memetic_whats/providers/file_provider.dart';
+import 'package:memetic_whats/controllers/selection_controller.dart';
+import 'package:memetic_whats/custom_widgets/myAppbar.dart';
+import 'package:memetic_whats/custom_widgets/my_drawer.dart';
+// import 'package:memetic_whats/custom_widgets/selection_appbar_sp.dart';
+import 'package:memetic_whats/models/meme_file.dart';
+// import 'package:memetic_whats/providers/file_management_shared_preference.dart';
+import 'package:memetic_whats/providers/file_management_db.dart';
 import 'package:memetic_whats/open_files/image_display.dart';
-// import 'package:open_file/open_file.dart';
+import 'package:open_file/open_file.dart';
 import 'package:provider/provider.dart';
 
-// ignore: must_be_immutable
 class DisplayList extends StatelessWidget {
-  DisplayList({super.key, required this.paths});
-  List<int> indexs = [];
-  bool selectionMode = false;
-  final List<String> paths;
+  DisplayList({
+    required this.pageTitle,
+    required this.files,
+    required this.drawerNum,
+    super.key,
+  });
+  final List<MemeFile> files;
+  final String pageTitle;
+  final int drawerNum;
+  // final Widget fileHeading;
+  final controller = SelectionController();
 
   @override
   Widget build(BuildContext context) {
+    // final files = Provider.of<FileProvider>(context).stickers;
     final fileProvider = Provider.of<FileProvider>(context);
+    // bool isImage = ['image', 'sticker'].contains(files.first.type);
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Images'),
-        actions: [
-          selectionMode
-              ? Row(
-                  children: [
-                    Text(indexs.length.toString()),
-                    PopupMenuButton(
-                      itemBuilder: (_) => [
-                        PopupMenuItem(
-                          child: Column(
-                            children: [
-                              ListTile(
-                                leading: Icon(Icons.share),
-                                title: Text("Share files"),
-                                onTap: () => fileProvider.shareMultipleFiles(
-                                  paths,
-                                  indexs.toSet(),
-                                ),
-                              ),
-                              ListTile(
-                                leading: Icon(Icons.delete),
-                                title: Text("Delete files"),
-                                onTap: () {
-                                  Navigator.pop(context);
-                                  for (var i = 0; i < indexs.length; i++) {
-                                    paths.remove(
-                                      paths[indexs[i]],
-                                    );
-                                  }
-                                  selectionMode = false;
-                                },
-                              ),
-                            ],
-                          ),
-                          // onTap: () => OpenFilex.open(filePath),
-                        ),
-                      ],
-                    ),
-                  ],
-                )
-              : SizedBox(),
-        ],
-        leading: Builder(
-          builder: (context) {
-            return IconButton(
-              icon: const Icon(Icons.menu),
-              onPressed: () {
-                Scaffold.of(context).openDrawer();
-              },
-            );
-          },
-        ),
+      // appBar: AppBar(title: Text("stickers in database")),
+      appBar: Myappbar(
+        itemsList: files,
+        controller: controller,
+        title: pageTitle,
       ),
-      body: Center(
-        
-          child: SingleChildScrollView(
-            child: Column(
-              children: [
-                Text("Image section"),
-                ListView.separated(
-                  shrinkWrap: true,
-                  physics: NeverScrollableScrollPhysics(),
-                  itemCount: paths.length,
-                  separatorBuilder: (_, __) => Divider(),
-                  itemBuilder: (context, index) {
-                    final imageFile = File(paths[index]);
-                    final filePath = paths[index];
-                    return ListTile(
-                      tileColor: Colors.blue[400],
-                      title: SizedBox(height: 80, child: Image.file(imageFile)),
-                      trailing: selectionMode
-                          ? Icon(
-                              indexs.contains(index)
-                                  ? Icons.check_box
-                                  : Icons.check_box_outline_blank,
-                            )
-                          : PopupMenuButton(
-                              itemBuilder: (_) => [
-                                PopupMenuItem(
-                                  child: Column(
-                                    children: [
-                                      ListTile(
-                                        leading: Icon(Icons.play_arrow),
-                                        title: Text("Open with"),
-                                        onTap: () async {
-                                          log(filePath);
-                                          File myFile = File(filePath);
-                                          if (await myFile.exists()) {
-                                            log(
-                                              'File is present, attempting to open...',
-                                            );
-                                            // final result = await OpenFile.open(
-                                            //   filePath,
-                                            // );
-                                            // log(
-                                            //   'File is present, it should have been opened',
-                                            // );
-                                            // log(result.type.toString());
-                                            // log(result.message.toString());
-                                          } else {
-                                            log(
-                                              'File does not exist at path: $filePath',
-                                            );
-                                          }
-                                          // OpenFile.open(filePath);
-      
-                                          // ScaffoldMessenger.of(context).showSnackBar(
-                                          //   SnackBar(
-                                          //     content: Text(
-                                          //       "Can not open files on different apps yet",
-                                          //     ),
-                                          //   ),
-                                          // );
-                                        },
-                                      ),
-                                      ListTile(
-                                        leading: Icon(Icons.share),
-                                        title: Text("Share file"),
-                                        onTap: () => fileProvider.shareSingleFile(
-                                          paths[index],
+      drawer: MyDrawer(drawerNum),
+      body: AnimatedBuilder(
+        animation: controller,
+        builder: (_, __) {
+          return ListView.builder(
+            itemCount: files.length,
+            itemBuilder: (_, i) {
+              int index = files.length - 1 - i;
+              final file = files[index];
+              final selected = controller.isSelected(index);
+              return ListTile(
+                // tileColor: Colors.blue[400],
+                title: Text(file.displayName),
+                leading: ['image', 'sticker'].contains(file.type)
+                    ? SizedBox(height: 80, child: Image.file(File(file.path)))
+                    : SizedBox(
+                        height: 80,
+                        child: Image.asset("assets/audio.png"),
+                      ),
+                trailing: controller.isSelectionMode
+                    ? Checkbox(
+                        value: selected,
+                        onChanged: (_) => controller.toggle(i),
+                      )
+                    : PopupMenuButton(
+                        itemBuilder: (_) => [
+                          PopupMenuItem(
+                            child: Column(
+                              children: [
+                                ListTile(
+                                  leading: Icon(Icons.play_arrow),
+                                  title: Text("Open file"),
+                                  onTap: () => OpenFile.open(file.path),
+                                ),
+                                ListTile(
+                                  leading: Icon(Icons.share),
+                                  title: Text("Share file"),
+                                  onTap: () =>
+                                      fileProvider.shareSingleFile(file),
+                                ),
+                                ListTile(
+                                  leading: Icon(Icons.text_rotation_none_sharp),
+                                  title: Text("Rename file"),
+                                  onTap: () {
+                                    final textController =
+                                        TextEditingController();
+                                    showDialog(
+                                      context: context,
+                                      builder: (context) => AlertDialog(
+                                        title: Text("Rename file"),
+                                        content: TextField(
+                                          controller: textController,
+                                          decoration: InputDecoration(
+                                            hintText: "Enter new name",
+                                          ),
                                         ),
+                                        actions: [
+                                          TextButton(
+                                            onPressed: () =>
+                                                Navigator.pop(context),
+                                            child: Text("Cancel"),
+                                          ),
+                                          ElevatedButton(
+                                            onPressed: () {
+                                              String newName =
+                                                  textController.text;
+                                              if (newName.isNotEmpty) {
+                                                // Call your rename function here
+                                                fileProvider.renameFile(
+                                                  file,
+                                                  newName,
+                                                );
+                                                Navigator.pop(context);
+                                              }
+                                            },
+                                            child: Text("Change name"),
+                                          ),
+                                        ],
                                       ),
-                                      ListTile(
-                                        leading: Icon(Icons.delete),
-                                        title: Text("Delete file"),
-                                        onTap: () {
-                                          Navigator.pop(context);
-                                          fileProvider.deleteStoreFile(paths, index, "test");//-------------------------------
-                                          // paths.removeAt(index);
-                                          // fileProvider.storeImages();
-                                        },
-                                      ),
-                                    ],
-                                  ),
-                                  // onTap: () => OpenFilex.open(filePath),
+                                    );
+                                    // fileProvider.shareSingleFile(file);
+                                  },
+                                ),
+                                ListTile(
+                                  leading: Icon(Icons.delete),
+                                  title: Text("Delete file"),
+                                  onTap: () {
+                                    Navigator.pop(context);
+                                    fileProvider.deleteFile(file);
+                                  },
                                 ),
                               ],
                             ),
-      
-                      onTap: () {
-                        if (selectionMode) {
-                          trigger(index);
-                        } else {
-                          fileProvider.addToRecent(filePath);
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => ImageDisplay(imageFile),
-                            ),
-                          );
-                        }
-                      },
-                      onLongPress: () {
-                        selectionMode = true;
-                        indexs.add(index);
-                      },
-                    );
-                  },
-                ),
-              ],
-            ),
-          ),
-        ),
+                            // onTap: () => OpenFilex.open(filePath),
+                          ),
+                        ],
+                      ),
+
+                onTap: () {
+                  if (controller.isSelectionMode) {
+                    controller.toggle(index);
+                  } else {
+                    fileProvider.addToRecent(file);
+                    if (['image', 'sticker'].contains(file.type)) {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => ImageDisplay(File(file.path)),
+                        ),
+                      );
+                    } else{
+                      OpenFile.open(file.path);
+                    }
+                  }
+                },
+                onLongPress: () {
+                  controller.toggle(index);
+                },
+              );
+            },
+          );
+        },
+      ),
     );
-  }
-  void trigger(int index) {
-    if (indexs.contains(index)) {
-      indexs.remove(index);
-      if (indexs.isEmpty) selectionMode = false;
-    } else {
-      indexs.add(index);
-    }
   }
 }

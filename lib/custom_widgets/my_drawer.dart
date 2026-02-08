@@ -2,29 +2,30 @@ import 'package:flutter/material.dart';
 import 'package:memetic_whats/lists/audio_list.dart';
 import 'package:memetic_whats/lists/images_list.dart';
 import 'package:memetic_whats/lists/stickers_list.dart';
-import 'package:memetic_whats/lists/test_list.dart';
+// import 'package:memetic_whats/lists/test_list.dart';
 import 'package:memetic_whats/lists/recent_list.dart';
-import 'package:memetic_whats/providers/file_provider.dart';
+import 'package:memetic_whats/providers/file_management_db.dart';
+// import 'package:memetic_whats/providers/file_management_shared_preference.dart';
 import 'package:provider/provider.dart';
 
 // ignore: must_be_immutable
 class MyDrawer extends StatelessWidget {
   MyDrawer(this.widgetNum, {super.key});
   int widgetNum;
-  List<String> titles = ["Resent", "Images", "Audios", "Stickers", "test"];
+  List<String> titles = ["Resent", "Images", "Audios", "Stickers"];
   List<Widget> pages = [
     RecentList(),
     ImagesList(),
     AudioList(),
     StickersList(),
-    TestList(),
+    // TestList(),
   ];
   List<String> imagesPath = [
     "assets/folder_icon.png",
     "assets/gallery.png",
     "assets/audio.png",
     "assets/file_icon.png",
-    "assets/file_icon.png",
+    // "assets/file_icon.png",
   ];
 
   @override
@@ -69,7 +70,7 @@ class MyDrawer extends StatelessWidget {
           ),
           ElevatedButton(onPressed: ()=>fileProvider.pickFiles(), child: Text("pick files")),
           ElevatedButton(onPressed: (){
-          fileProvider.storeAll();
+          // fileProvider.storeAll();
             ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("stored all received files"))); 
           }
           , child: Text("Store all files")),

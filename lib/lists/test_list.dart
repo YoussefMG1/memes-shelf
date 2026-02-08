@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:memetic_whats/controllers/selection_controller.dart';
 import 'package:memetic_whats/custom_widgets/my_drawer.dart';
-import 'package:memetic_whats/custom_widgets/selection_appbar.dart';
-import 'package:memetic_whats/providers/file_provider.dart';
-import 'package:provider/provider.dart';
+// import 'package:memetic_whats/custom_widgets/selection_appbar_sp.dart';
+// import 'package:memetic_whats/providers/file_management_shared_preference.dart';
+// import 'package:provider/provider.dart';
 
 // ignore: must_be_immutable
 class TestList extends StatelessWidget {
@@ -21,21 +21,21 @@ class TestList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final imageFiles = Provider.of<FileProvider>(context).images;
-    final fileProvider = Provider.of<FileProvider>(context);
+    // final imageFiles = Provider.of<FileProvider>(context).images;
+    // final fileProvider = Provider.of<FileProvider>(context);
     return Scaffold(
-      bottomNavigationBar: ElevatedButton(onPressed: ()=>fileProvider.pickFiles(), child: Text("pick files")),
+      // bottomNavigationBar: ElevatedButton(onPressed: ()=>fileProvider.pickFiles(), child: Text("pick files")),
       drawer: MyDrawer(5),
-      appBar: SelectionAppBar(
-        controller: controller,
-        title: 'Files',
-        onDelete: () {
-          // delete logic
-          controller.clear();
-        }, 
-        itemsList: imageFiles, 
-        itemsListName: 'images',
-      ),
+      // appBar: SelectionAppBar(
+      //   controller: controller,
+      //   title: 'Files',
+      //   onDelete: () {
+      //     // delete logic
+      //     controller.clear();
+      //   }, 
+      //   itemsList: imageFiles, 
+      //   itemsListName: 'images',
+      // ),
       body: Container(
         decoration: BoxDecoration(
 

@@ -8,7 +8,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter_sharing_intent/flutter_sharing_intent.dart';
 import 'package:flutter_sharing_intent/model/sharing_file.dart';
 
-class FileProvider extends ChangeNotifier {
+class FileProviderSP extends ChangeNotifier {
   List<String> images = [];
   List<String> audios = [];
   List<String> stickers = [];
@@ -33,7 +33,7 @@ class FileProvider extends ChangeNotifier {
     FlutterSharingIntent.instance.getInitialSharing().then((List<SharedFile> listenedFiles) {
       _addListenedFiles(listenedFiles);
     });
-    storeAll();
+    // storeAll();
   }
 
   @override
@@ -84,13 +84,13 @@ class FileProvider extends ChangeNotifier {
       //we can do this if we want
       //List<XFile> xFiles = result.xFiles;
       for (var file in result.files) {
-        log(file.toString());
-        log(file.path.toString());
-        log(file.bytes.toString());
-        log(file.name.toString());
-        log(file.size.toString());
-        log(file.extension.toString());
-        log(file.xFile.toString());
+        // log(file.toString());
+        // log(file.path.toString());
+        // log(file.bytes.toString());
+        // log(file.name.toString());
+        // log(file.size.toString());
+        // log(file.extension.toString());
+        // log(file.xFile.toString());
         final ext = file.extension?.toLowerCase();
 
         if (['jpg', 'png', 'jpeg'].contains(ext)) {

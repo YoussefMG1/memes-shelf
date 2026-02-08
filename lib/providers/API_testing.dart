@@ -3,7 +3,7 @@ import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
-import 'package:memetic_whats/model/opject_detection.dart';
+import 'package:memetic_whats/models/opject_detection.dart';
 
 class ApiTesting extends ChangeNotifier {
   List<ObjectDetection> detectedObjects = [];

@@ -1,22 +1,24 @@
 import 'package:flutter/material.dart';
 import 'package:memetic_whats/controllers/selection_controller.dart';
-import 'package:memetic_whats/providers/file_provider.dart';
+import 'package:memetic_whats/models/meme_file.dart';
+import 'package:memetic_whats/providers/file_management_db.dart';
+// import 'package:memetic_whats/providers/file_management_db.dart';
 import 'package:provider/provider.dart';
 
-class SelectionAppBar extends StatelessWidget
+class Myappbar extends StatelessWidget
     implements PreferredSizeWidget {
-  final List<String> itemsList;
-  final String itemsListName;
+  final List<MemeFile> itemsList;
+  // final String itemsListName;
   final SelectionController controller;
   final String title;
-  final VoidCallback onDelete;//doesn't do anything now
+  // final VoidCallback onDelete;//doesn't do anything now
 
-  const SelectionAppBar({
+  const Myappbar({
     required this.itemsList,
-    required this.itemsListName,
+    // required this.itemsListName,
     required this.controller,
     required this.title,
-    required this.onDelete,
+    // required this.onDelete,
   });
 
   @override
@@ -55,7 +57,7 @@ class SelectionAppBar extends StatelessWidget
                                 title: Text("Delete files"),
                                 onTap: () {
                                   Navigator.pop(context);
-                                  fileProvider.deleteSelectiveFiles(itemsList, controller.selectedItems,itemsListName);
+                                  fileProvider.deleteSelectiveFiles(itemsList, controller.selectedItems);
                                   controller.clear();
                                 },
                               ),
@@ -63,7 +65,7 @@ class SelectionAppBar extends StatelessWidget
                                 leading: Icon(Icons.select_all),
                                 title: Text("Select All"),
                                 onTap: () {
-                                  controller.selectAll(itemsList);
+                                  // controller.selectAll(itemsList);
                                 },
                               ),
                               ListTile(

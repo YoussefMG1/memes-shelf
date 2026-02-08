@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 // import 'package:flutter_sharing_intent/flutter_sharing_intent.dart';
 // import 'package:flutter_sharing_intent/model/sharing_file.dart';
 import 'package:memetic_whats/providers/API_testing.dart';
-import 'package:memetic_whats/providers/file_provider.dart';
+import 'package:memetic_whats/providers/file_management_shared_preference.dart';
+import 'package:memetic_whats/providers/file_management_db.dart';
 import 'package:provider/provider.dart';
 import 'lists/recent_list.dart';
 // import 'picking_files.dart';
@@ -14,6 +15,7 @@ void main() {
   runApp(
     MultiProvider(
       providers: [
+        ChangeNotifierProvider(create: (context) => FileProviderSP()),
         ChangeNotifierProvider(create: (context) => FileProvider()),
         ChangeNotifierProvider(create: (context) => ApiTesting()),
       ],
