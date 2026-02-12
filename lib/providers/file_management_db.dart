@@ -120,14 +120,11 @@ class FileProvider extends ChangeNotifier {
   }
 
   void deleteSelectiveFiles(List<MemeFile> list, Set<int> indexes) async {
-    log("deleteSelectiveFiles called");
     for (final index in indexes) {
       // await MemeDatabase.instance.deleteFile(list[index].id!);
       deleteFile(list[index]);
     }
-
-    log("deleteSelectiveFiles finished");
-    await _loadFromDatabase();
+    // await _loadFromDatabase();
   }
 
   // ==================================================
@@ -141,6 +138,7 @@ class FileProvider extends ChangeNotifier {
     MemeDatabase.instance.addFile(updated);
     await _loadFromDatabase();
   }
+
   void renameFile(MemeFile file,String newName) async {
     final updated = file.copyWith(displayName: newName);
     await MemeDatabase.instance.updateFile(updated);

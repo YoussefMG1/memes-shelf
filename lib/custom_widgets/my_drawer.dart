@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:memetic_whats/ObjectDetectionPage.dart';
 import 'package:memetic_whats/lists/audio_list.dart';
 import 'package:memetic_whats/lists/images_list.dart';
 import 'package:memetic_whats/lists/stickers_list.dart';
@@ -68,6 +69,7 @@ class MyDrawer extends StatelessWidget {
                     );
             },
           ),
+          ElevatedButton(onPressed: () => Navigator.push(context, MaterialPageRoute(builder: (_) => ObjectDetectionPage())),child: Text("ObjectDetectionPage"),),
           ElevatedButton(onPressed: ()=>fileProvider.pickFiles(), child: Text("pick files")),
           ElevatedButton(onPressed: (){
           // fileProvider.storeAll();

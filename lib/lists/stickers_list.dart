@@ -11,6 +11,6 @@ class StickersList extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final stickersPath = Provider.of<FileProvider>(context).stickers;
-    return DisplayList(pageTitle: "stickers list DB", files: stickersPath,drawerNum: 4,);
+    return DisplayList(pageTitle: "stickers", files: stickersPath,drawerNum: 4,);
   }
 }

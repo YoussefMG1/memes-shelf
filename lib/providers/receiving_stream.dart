@@ -7,15 +7,8 @@ import 'package:flutter_sharing_intent/flutter_sharing_intent.dart';
 import 'package:flutter_sharing_intent/model/sharing_file.dart';
 
 class ReceivingStream extends ChangeNotifier {
-  // List<String> images = [];
-  // List<String> audios = [];
-  // List<String> stickers = [];
-  // List<String> recent = [];
-  // ignore: unused_field
   late StreamSubscription _intentDataStreamSubscription ;
-
   List<SharedFile>? list;
-  // List<PlatformFile> images = [];
 
   ReceivingStream(){
     log("constructor is called");

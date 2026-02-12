@@ -11,6 +11,6 @@ class RecentList extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final recentList = Provider.of<FileProvider>(context).recent;
-    return  DisplayList(pageTitle: "recent list DB", files: recentList,drawerNum: 1,);
+    return  DisplayList(pageTitle: "recent files", files: recentList,drawerNum: 1,);
   }
 }

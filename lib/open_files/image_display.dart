@@ -34,7 +34,7 @@ class ImageDisplay extends StatelessWidget {
       bottomNavigationBar: Container(height: 70,
         child: ElevatedButton(onPressed: () async {
             log(imageFile.path);
-            final response = await api.sendImageToApi(imageFile.path);
+            final response = await api.sendImage1ToApi(imageFile.path);
             ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(response)));
           }, child: Text("test API",style: TextStyle(color: Colors.black,fontWeight: FontWeight.bold,fontSize: 20),),),
       )

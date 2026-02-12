@@ -42,6 +42,8 @@ class DisplayList extends StatelessWidget {
         animation: controller,
         builder: (_, __) {
           return ListView.builder(
+            shrinkWrap: true,
+                physics: NeverScrollableScrollPhysics(),
             itemCount: files.length,
             itemBuilder: (_, i) {
               int index = files.length - 1 - i;
