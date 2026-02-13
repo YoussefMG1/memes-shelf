@@ -1,23 +1,20 @@
 import 'package:flutter/material.dart';
-// import 'package:flutter_sharing_intent/flutter_sharing_intent.dart';
-// import 'package:flutter_sharing_intent/model/sharing_file.dart';
-import 'package:memetic_whats/providers/API_testing.dart';
-import 'package:memetic_whats/providers/file_management_shared_preference.dart';
-import 'package:memetic_whats/providers/file_management_db.dart';
 import 'package:provider/provider.dart';
-import 'lists/recent_list.dart';
-// import 'picking_files.dart';
-// import 'dart:async';
 
-// import 'package:receive_sharing_intent/receive_sharing_intent.dart';
+import 'package:memetic_whats/providers/API_testing.dart';
+import 'package:memetic_whats/providers/file_management_db.dart';
+import 'package:memetic_whats/themes/theme.dart';
+import 'package:memetic_whats/themes/theme_provider.dart';
+import 'lists/recent_list.dart';
 
 void main() {
   runApp(
     MultiProvider(
       providers: [
-        ChangeNotifierProvider(create: (context) => FileProviderSP()),
+        // ChangeNotifierProvider(create: (context) => FileProviderSP()),
         ChangeNotifierProvider(create: (context) => FileProvider()),
         ChangeNotifierProvider(create: (context) => ApiTesting()),
+        ChangeNotifierProvider(create: (context) => ThemeProvider()),
       ],
       child: MyApp(),
     ),
@@ -31,10 +28,14 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      debugShowCheckedModeBanner: false,
       title: 'Memes Repo',
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-      ),
+      // change theme by yourself in the app
+      theme: Provider.of<ThemeProvider>(context).myThemeData,
+
+      // change theme by by system mode
+      // theme: lightMode,
+      // darkTheme: darkMode,
       home: RecentList(),
     );
   }

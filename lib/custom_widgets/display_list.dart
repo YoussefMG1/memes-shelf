@@ -1,16 +1,15 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:memetic_whats/controllers/selection_controller.dart';
-import 'package:memetic_whats/custom_widgets/myAppbar.dart';
-import 'package:memetic_whats/custom_widgets/my_drawer.dart';
-// import 'package:memetic_whats/custom_widgets/selection_appbar_sp.dart';
-import 'package:memetic_whats/models/meme_file.dart';
-// import 'package:memetic_whats/providers/file_management_shared_preference.dart';
-import 'package:memetic_whats/providers/file_management_db.dart';
-import 'package:memetic_whats/open_files/image_display.dart';
 import 'package:open_file/open_file.dart';
 import 'package:provider/provider.dart';
+
+import '/controllers/selection_controller.dart';
+import '/custom_widgets/myAppbar.dart';
+import '/custom_widgets/my_drawer.dart';
+import '/models/meme_file.dart';
+import '/providers/file_management_db.dart';
+import '/open_files/image_display.dart';
 
 class DisplayList extends StatelessWidget {
   DisplayList({
@@ -22,16 +21,13 @@ class DisplayList extends StatelessWidget {
   final List<MemeFile> files;
   final String pageTitle;
   final int drawerNum;
-  // final Widget fileHeading;
   final controller = SelectionController();
 
   @override
   Widget build(BuildContext context) {
-    // final files = Provider.of<FileProvider>(context).stickers;
     final fileProvider = Provider.of<FileProvider>(context);
-    // bool isImage = ['image', 'sticker'].contains(files.first.type);
     return Scaffold(
-      // appBar: AppBar(title: Text("stickers in database")),
+      backgroundColor: Theme.of(context).colorScheme.background,
       appBar: Myappbar(
         itemsList: files,
         controller: controller,
@@ -49,6 +45,15 @@ class DisplayList extends StatelessWidget {
               int index = files.length - 1 - i;
               final file = files[index];
               final selected = controller.isSelected(index);
+              bool exist = File(file.path).existsSync();
+              if(!exist) {
+
+              return TextButton(onPressed: () {
+                // Navigator.pop(context);
+                ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("deleted: ${file.displayName}"),duration: Duration(seconds: 1),));
+                fileProvider.deleteFile(file);
+              }, child: Text("couldn't find file: ${file.path} - ${file.displayName}"),);
+              }
               return ListTile(
                 // tileColor: Colors.blue[400],
                 title: Text(file.displayName),

@@ -6,6 +6,7 @@ import 'package:memetic_whats/lists/stickers_list.dart';
 // import 'package:memetic_whats/lists/test_list.dart';
 import 'package:memetic_whats/lists/recent_list.dart';
 import 'package:memetic_whats/providers/file_management_db.dart';
+import 'package:memetic_whats/themes/theme_provider.dart';
 // import 'package:memetic_whats/providers/file_management_shared_preference.dart';
 import 'package:provider/provider.dart';
 
@@ -69,13 +70,23 @@ class MyDrawer extends StatelessWidget {
                     );
             },
           ),
-          ElevatedButton(onPressed: () => Navigator.push(context, MaterialPageRoute(builder: (_) => ObjectDetectionPage())),child: Text("ObjectDetectionPage"),),
-          ElevatedButton(onPressed: ()=>fileProvider.pickFiles(), child: Text("pick files")),
-          ElevatedButton(onPressed: (){
-          // fileProvider.storeAll();
-            ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("stored all received files"))); 
-          }
-          , child: Text("Store all files")),
+          ElevatedButton(
+            onPressed: () => Navigator.push(
+              context,
+              MaterialPageRoute(builder: (_) => ObjectDetectionPage()),
+            ),
+            child: Text("ObjectDetectionPage"),
+          ),
+          ElevatedButton(
+            onPressed: () => fileProvider.pickFiles(),
+            child: Text("pick files"),
+          ),
+          ElevatedButton(
+            onPressed: () {
+              Provider.of<ThemeProvider>(context).toggleTheme();
+            },
+            child: Text("Change theme"),
+          ),
         ],
       ),
       // Column( //may chang it to Column as may cause a problem that there is ListView inside a ListView

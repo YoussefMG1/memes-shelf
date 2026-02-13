@@ -1,8 +1,10 @@
 import 'dart:async';
 import 'dart:developer';
+import 'dart:io';
 
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:flutter_sharing_intent/flutter_sharing_intent.dart';
 import 'package:flutter_sharing_intent/model/sharing_file.dart';
@@ -76,11 +78,13 @@ class FileProvider extends ChangeNotifier {
     for (final file in result.files) {
       final type = _detectType(file.extension);
       if (type == null || file.path == null) continue;
-
+      log(file.path!);
+      final newFile = await saveFileLocally(file);
+      log(newFile.path);
       await MemeDatabase.instance.addFile(
         MemeFile(
-          path: file.path!,
-          displayName: file.name,
+          path: newFile.path,
+          displayName: newFile.path.split('/').last,
           type: type,
           isRecent: false,
         ),
@@ -89,6 +93,22 @@ class FileProvider extends ChangeNotifier {
 
     await _loadFromDatabase();
   }
+  
+  Future<File> saveFileLocally(PlatformFile file) async {
+  final appDir = await getApplicationDocumentsDirectory();
+  final newPath = '${appDir.path}/${file.name}';
+
+  final newFile = File(newPath);
+
+  if (file.path != null) {
+    await File(file.path!).copy(newPath);
+  } else if (file.bytes != null) {
+    await newFile.writeAsBytes(file.bytes!);
+  }
+
+  return newFile;
+}
+
 
   void _handleSharedFiles(List<SharedFile> files) async {
     for (final file in files) {
