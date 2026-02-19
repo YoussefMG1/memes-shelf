@@ -1,103 +1,168 @@
 import 'package:flutter/material.dart';
-import 'package:memetic_whats/ObjectDetectionPage.dart';
 import 'package:memetic_whats/lists/audio_list.dart';
 import 'package:memetic_whats/lists/images_list.dart';
 import 'package:memetic_whats/lists/stickers_list.dart';
-// import 'package:memetic_whats/lists/test_list.dart';
 import 'package:memetic_whats/lists/recent_list.dart';
 import 'package:memetic_whats/providers/file_management_db.dart';
 import 'package:memetic_whats/themes/theme_provider.dart';
-// import 'package:memetic_whats/providers/file_management_shared_preference.dart';
 import 'package:provider/provider.dart';
 
 // ignore: must_be_immutable
 class MyDrawer extends StatelessWidget {
+  final int widgetNum;
+
   MyDrawer(this.widgetNum, {super.key});
-  int widgetNum;
-  List<String> titles = ["Resent", "Images", "Audios", "Stickers"];
-  List<Widget> pages = [
+
+  final List<String> titles = ["Recent", "Images", "Audios", "Stickers"];
+  final List<Widget> pages = [
     RecentList(),
     ImagesList(),
     AudioList(),
     StickersList(),
-    // TestList(),
   ];
-  List<String> imagesPath = [
+  final List<String> imagesPath = [
     "assets/folder_icon.png",
     "assets/gallery.png",
     "assets/audio.png",
     "assets/file_icon.png",
-    // "assets/file_icon.png",
   ];
 
   @override
   Widget build(BuildContext context) {
     final fileProvider = Provider.of<FileProvider>(context);
+    final themeProvider = Provider.of<ThemeProvider>(context);
+
     return Drawer(
-      child: ListView(
+      backgroundColor: const Color(0xFF121212), // const Color(0xFF121212)
+      child: Column(
         children: [
           DrawerHeader(
-            decoration: BoxDecoration(color: Colors.blue),
-            child: Text("Memy App"),
-          ),
-          ListView.builder(
-            shrinkWrap: true,
-            physics: NeverScrollableScrollPhysics(),
-            itemCount: pages.length,
-            itemBuilder: (_, i) {
-              return (i == widgetNum - 1)
-                  ? ListTile(
-                      tileColor: Colors.blue[200],
-                      title: Text(titles[i]),
-                      leading: SizedBox(
-                        height: 50,
-                        child: Image.asset(imagesPath[i]),
-                      ),
-                    )
-                  : ListTile(
-                      title: Text(titles[i]),
-                      leading: SizedBox(
-                        height: 50,
-                        child: Image.asset(imagesPath[i]),
-                      ),
-                      onTap: () {
-                        Navigator.pushReplacement(
-                          context,
-                          MaterialPageRoute(builder: (_) => pages[i]),
-                        );
-                        // Navigator.pop(context);
-                      },
-                    );
-            },
-          ),
-          ElevatedButton(
-            onPressed: () => Navigator.push(
-              context,
-              MaterialPageRoute(builder: (_) => ObjectDetectionPage()),
+            decoration: const BoxDecoration(
+              color: Color(0xFF1F1F1F),
+            ), // const Color(0xFF1F1F1F)
+            child: Row(
+              children: const [
+                Icon(Icons.menu_book, size: 40, color: Colors.white),
+                SizedBox(width: 16),
+                Text(
+                  "Memy App",
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ],
             ),
-            child: Text("ObjectDetectionPage"),
           ),
-          ElevatedButton(
-            onPressed: () => fileProvider.pickFiles(),
-            child: Text("pick files"),
+          Expanded(
+            child: ListView.builder(
+              itemCount: pages.length,
+              itemBuilder: (_, i) {
+                bool selected = (i == widgetNum - 1);
+                return Container(
+                  margin: const EdgeInsets.symmetric(
+                    horizontal: 8,
+                    vertical: 4,
+                  ),
+                  decoration: BoxDecoration(
+                    color: selected
+                        ? Colors.grey[800]
+                        : Theme.of(context).colorScheme.background,
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  child: ListTile(
+                    leading: Image.asset(
+                      imagesPath[i],
+                      width: 35,
+                      height: 35,
+                      color: Colors.white,
+                    ),
+                    title: Text(
+                      titles[i],
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontWeight: selected
+                            ? FontWeight.bold
+                            : FontWeight.normal,
+                      ),
+                    ),
+                    onTap: () {
+                      Navigator.pushReplacement(
+                        context,
+                        MaterialPageRoute(builder: (context) => pages[i]),
+                      );
+                    },
+                  ),
+                );
+              },
+            ),
           ),
-          ElevatedButton(
-            onPressed: () {
-              Provider.of<ThemeProvider>(context).toggleTheme();
-            },
-            child: Text("Change theme"),
+          const Divider(color: Colors.white54),
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Column(
+              children: [
+                ElevatedButton.icon(
+                  icon: const Icon(Icons.upload_file, color: Colors.white),
+                  label: const Text("Pick Files"),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.grey[850],
+                    minimumSize: const Size(double.infinity, 50),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                  ),
+                  onPressed: () => fileProvider.pickFiles(),
+                ),
+                const SizedBox(height: 8),
+                ElevatedButton.icon(
+                  icon: const Icon(Icons.save, color: Colors.white),
+                  label: const Text("Store All Files"),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.grey[850],
+                    minimumSize: const Size(double.infinity, 50),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                  ),
+                  onPressed: () {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(
+                        content: Text("Stored all received files"),
+                      ),
+                    );
+                  },
+                ),
+                const SizedBox(height: 8),
+                ElevatedButton.icon(
+                  icon: Icon(
+                    themeProvider.isDarkMode
+                        ? Icons.dark_mode
+                        : Icons.light_mode,
+                    color: Colors.white,
+                  ),
+                  label: Text(
+                    themeProvider.isDarkMode
+                        ? "Switch to Light"
+                        : "Switch to Dark",
+                  ),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.grey[850],
+                    minimumSize: const Size(double.infinity, 50),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                  ),
+                  onPressed: () {
+                    themeProvider.toggleTheme();
+                  },
+                ),
+              ],
+            ),
           ),
         ],
       ),
-      // Column( //may chang it to Column as may cause a problem that there is ListView inside a ListView
-      //   children: [
-      //     DrawerHeader(
-      //       decoration: BoxDecoration(color: Colors.blue),
-      //       child: Text("Memy App"),
-      //     ),
-
-      //   ],
-      // ),
     );
   }
 }
