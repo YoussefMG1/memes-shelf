@@ -28,17 +28,16 @@ class FileProvider extends ChangeNotifier {
     log('FileProvider constructor');
     _loadFromDatabase();
 
-    _intentDataStreamSubscription =
-        FlutterSharingIntent.instance.getMediaStream().listen(
-      _handleSharedFiles,
-      onError: (err) {
-        log("Sharing stream error: $err");
-      },
-    );
+    _intentDataStreamSubscription = FlutterSharingIntent.instance
+        .getMediaStream()
+        .listen(
+          _handleSharedFiles,
+          onError: (err) {
+            log("Sharing stream error: $err");
+          },
+        );
 
-    FlutterSharingIntent.instance.getInitialSharing().then(
-      _handleSharedFiles,
-    );
+    FlutterSharingIntent.instance.getInitialSharing().then(_handleSharedFiles);
   }
 
   @override
@@ -70,8 +69,7 @@ class FileProvider extends ChangeNotifier {
   // ==================================================
 
   void pickFiles() async {
-    final result =
-        await FilePicker.platform.pickFiles(allowMultiple: true);
+    final result = await FilePicker.platform.pickFiles(allowMultiple: true);
 
     if (result == null) return;
 
@@ -93,22 +91,21 @@ class FileProvider extends ChangeNotifier {
 
     await _loadFromDatabase();
   }
-  
+
   Future<File> saveFileLocally(PlatformFile file) async {
-  final appDir = await getApplicationDocumentsDirectory();
-  final newPath = '${appDir.path}/${file.name}';
+    final appDir = await getApplicationDocumentsDirectory();
+    final newPath = '${appDir.path}/${file.name}';
 
-  final newFile = File(newPath);
+    final newFile = File(newPath);
 
-  if (file.path != null) {
-    await File(file.path!).copy(newPath);
-  } else if (file.bytes != null) {
-    await newFile.writeAsBytes(file.bytes!);
+    if (file.path != null) {
+      await File(file.path!).copy(newPath);
+    } else if (file.bytes != null) {
+      await newFile.writeAsBytes(file.bytes!);
+    }
+
+    return newFile;
   }
-
-  return newFile;
-}
-
 
   void _handleSharedFiles(List<SharedFile> files) async {
     for (final file in files) {
@@ -117,6 +114,7 @@ class FileProvider extends ChangeNotifier {
       final type = _detectType(file.value!.split('.').last);
       if (type == null) continue;
 
+      log('Received shared file: ${file.value} with type: $type');
       await MemeDatabase.instance.addFile(
         MemeFile(
           path: file.value!,
@@ -159,7 +157,7 @@ class FileProvider extends ChangeNotifier {
     await _loadFromDatabase();
   }
 
-  void renameFile(MemeFile file,String newName) async {
+  void renameFile(MemeFile file, String newName) async {
     final updated = file.copyWith(displayName: newName);
     await MemeDatabase.instance.updateFile(updated);
     await _loadFromDatabase();
@@ -170,16 +168,12 @@ class FileProvider extends ChangeNotifier {
   // ==================================================
 
   void shareSingleFile(MemeFile file) async {
-    await SharePlus.instance.share(
-      ShareParams(files: [XFile(file.path)]),
-    );
+    await SharePlus.instance.share(ShareParams(files: [XFile(file.path)]));
   }
 
   void shareMultipleFiles(List<MemeFile> list, Set<int> indexes) async {
     final files = indexes.map((i) => XFile(list[i].path)).toList();
-    await SharePlus.instance.share(
-      ShareParams(files: files),
-    );
+    await SharePlus.instance.share(ShareParams(files: files));
   }
 
   // ==================================================
