@@ -3,7 +3,6 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:open_file/open_file.dart';
 import 'package:provider/provider.dart';
-
 import '/controllers/selection_controller.dart';
 import '/custom_widgets/myAppbar.dart';
 import '/custom_widgets/my_drawer.dart';
@@ -39,20 +38,30 @@ class DisplayList extends StatelessWidget {
         builder: (_, __) {
           return ListView.builder(
             shrinkWrap: true,
-                physics: NeverScrollableScrollPhysics(),
+            physics: AlwaysScrollableScrollPhysics(),
+            // physics: NeverScrollableScrollPhysics(),
             itemCount: files.length,
             itemBuilder: (_, i) {
               int index = files.length - 1 - i;
               final file = files[index];
               final selected = controller.isSelected(index);
               bool exist = File(file.path).existsSync();
-              if(!exist) {
-
-              return TextButton(onPressed: () {
-                // Navigator.pop(context);
-                ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("deleted: ${file.displayName}"),duration: Duration(seconds: 1),));
-                fileProvider.deleteFile(file);
-              }, child: Text("couldn't find file: ${file.path} - ${file.displayName}"),);
+              if (!exist) {
+                return TextButton(
+                  onPressed: () {
+                    // Navigator.pop(context);
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: Text("deleted: ${file.displayName}"),
+                        duration: Duration(seconds: 1),
+                      ),
+                    );
+                    fileProvider.deleteFile(file);
+                  },
+                  child: Text(
+                    "couldn't find file: ${file.path} - ${file.displayName}",
+                  ),
+                );
               }
               return ListTile(
                 // tileColor: Colors.blue[400],
@@ -154,7 +163,7 @@ class DisplayList extends StatelessWidget {
                           builder: (context) => ImageDisplay(File(file.path)),
                         ),
                       );
-                    } else{
+                    } else {
                       OpenFile.open(file.path);
                     }
                   }

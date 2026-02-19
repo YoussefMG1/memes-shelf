@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:memetic_whats/ObjectDetectionPage.dart';
+// import 'package:memetic_whats/ObjectDetectionPage.dart';
 import 'package:memetic_whats/lists/audio_list.dart';
 import 'package:memetic_whats/lists/images_list.dart';
 import 'package:memetic_whats/lists/stickers_list.dart';
@@ -33,12 +33,14 @@ class MyDrawer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final fileProvider = Provider.of<FileProvider>(context);
+    final theme = Provider.of<ThemeProvider>(context);
     return Drawer(
       child: ListView(
+        padding: EdgeInsets.symmetric(vertical: 10),
         children: [
           DrawerHeader(
-            decoration: BoxDecoration(color: Colors.blue),
-            child: Text("Memy App"),
+            decoration: BoxDecoration(color: Colors.blue.shade400,borderRadius: BorderRadius.all(Radius.circular(15))),
+            child: Center(child: Text("Memy App",style: TextStyle(fontSize: 25,fontWeight: FontWeight.bold),)),
           ),
           ListView.builder(
             shrinkWrap: true,
@@ -70,20 +72,29 @@ class MyDrawer extends StatelessWidget {
                     );
             },
           ),
+          // ElevatedButton(
+          //   onPressed: () => Navigator.push(
+          //     context,
+          //     MaterialPageRoute(builder: (_) => ObjectDetectionPage()),
+          //   ),
+          //   child: Text("ObjectDetectionPage"),
+          // ),
+          // Container(
+          //   margin: EdgeInsets.all(10),
+          //   height: 100,
+          //   decoration: BoxDecoration(
+          //   color: Theme.of(context).colorScheme.primary,
+          //     borderRadius: BorderRadius.all(Radius.elliptical(20, 30))
+          //   ),
+          // ),
           ElevatedButton(
-            onPressed: () => Navigator.push(
-              context,
-              MaterialPageRoute(builder: (_) => ObjectDetectionPage()),
-            ),
-            child: Text("ObjectDetectionPage"),
-          ),
-          ElevatedButton(
+            // style: ButtonStyle(backgroundColor: theme.myThemeData.primaryColor!),
             onPressed: () => fileProvider.pickFiles(),
             child: Text("pick files"),
           ),
           ElevatedButton(
             onPressed: () {
-              Provider.of<ThemeProvider>(context).toggleTheme();
+              theme.toggleTheme();
             },
             child: Text("Change theme"),
           ),
