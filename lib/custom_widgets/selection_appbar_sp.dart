@@ -64,7 +64,7 @@ class SelectionAppBarSP extends StatelessWidget
                                 leading: Icon(Icons.select_all),
                                 title: Text("Select All"),
                                 onTap: () {
-                                  controller.selectAll(itemsList);
+                                  controller.selectAll(itemsList.length);
                                 },
                               ),
                               ListTile(

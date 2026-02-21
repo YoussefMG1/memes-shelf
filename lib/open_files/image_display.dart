@@ -11,43 +11,49 @@ class ImageDisplay extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-
-    // i think i should call it as object not provider 
+    // i think i should call it as object not provider
     // to have the detectedObjects for this image only
     final api = Provider.of<ApiTesting>(context);
 
     return Scaffold(
       body: Center(
         child: SingleChildScrollView(
-          child: Column(// stack :image, lable. then previse & next puttons to display one lable
-            children: [
-              Center(
-                child: Container(
-                  decoration: BoxDecoration(color: Colors.blue),
-                  child: Image.file(imageFile),
-                ),
-              ),
-            ],
+          child: Center(
+            child: InteractiveViewer(
+              boundaryMargin: EdgeInsets.all(20.0),
+              minScale: 0.1,
+              maxScale: 5.0,
+              child: Image.file(imageFile),
+            ),
+            // Container(
+            //   decoration: BoxDecoration(color: Colors.blue),
+            //   child: Image.file(imageFile),
+            // ),
           ),
         ),
       ),
-      bottomNavigationBar: Container(height: 70,
-        child: ElevatedButton(onPressed: () async {
-            log(imageFile.path);
-            final response = await api.sendImage1ToApi(imageFile.path);
-            ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(response)));
-          }, child: Text("test API",style: TextStyle(color: Colors.black,fontWeight: FontWeight.bold,fontSize: 20),),),
-      )
-      
-      // ListTile(
-      //   leading: Icon(Icons.network_ping),
-      //   title: Text("test API"),
-      //   onTap: () async {
-      //     log(imageFile.path);
-      //     final response = await api.sendImageToApi(imageFile.path);
-      //     ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(response)));
-      //   },
+      // bottomNavigationBar: Container(
+      //   height: 70,
+      //   child: ElevatedButton(
+      //     onPressed: () async {
+      //       log(imageFile.path);
+      //       final response = await api.sendImage1ToApi(imageFile.path);
+      //       ScaffoldMessenger.of(
+      //         context,
+      //       ).showSnackBar(SnackBar(content: Text(response)));
+      //     },
+      //     child: Text(
+      //       "test API",
+      //       style: TextStyle(
+      //         color: Colors.black,
+      //         fontWeight: FontWeight.bold,
+      //         fontSize: 20,
+      //       ),
+      //     ),
+      //   ),
       // ),
+
+
     );
   }
 }

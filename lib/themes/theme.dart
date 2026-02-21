@@ -10,12 +10,13 @@ import 'package:flutter/material.dart';
 // );
 ThemeData lightMode = ThemeData(
   brightness: Brightness.light,
-  scaffoldBackgroundColor: const Color(0xFFF5F5F5),
+  scaffoldBackgroundColor: Colors.green,
 
   colorScheme: const ColorScheme.light(
-    background: Color(0xFFF5F5F5),
-    primary: Colors.white,
-    secondary: Color(0xFFE0E0E0),
+    background: Colors.white,
+    onPrimary: Colors.black,
+    primary: Color(0xFFdddddd),
+    secondary: Color(0xFFaaaaaa),
   ),
 
   appBarTheme: const AppBarTheme(
@@ -38,6 +39,21 @@ ThemeData lightMode = ThemeData(
     iconColor: Colors.black,
     textColor: Colors.black,
   ),
+  textTheme: TextTheme(
+    titleLarge: TextStyle(
+      fontSize: 22,
+      fontWeight: FontWeight.bold,
+      color: Colors.black,
+    ),
+    bodyMedium: TextStyle(fontSize: 16, color: Colors.black),
+  ),
+  elevatedButtonTheme: ElevatedButtonThemeData(
+    style: ElevatedButton.styleFrom(
+      backgroundColor: Color(0xFFaaaaaa),
+      foregroundColor: Colors.black,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+    ),
+  ),
 );
 
 // ThemeData darkMode = ThemeData(
@@ -52,10 +68,11 @@ ThemeData darkMode = ThemeData(
   brightness: Brightness.dark,
   scaffoldBackgroundColor: const Color(0xFF121212),
 
-  colorScheme: const ColorScheme.dark(
-    background: Color(0xFF121212),
+  colorScheme: ColorScheme.dark(
+    background: const Color(0xFF121212),
     primary: Color(0xFF1F1F1F),
-    secondary: Color(0xFF3E3E49),
+    onPrimary: Colors.white,
+    secondary: const Color.fromRGBO(48, 48, 48, 1),
   ),
 
   appBarTheme: const AppBarTheme(
@@ -65,7 +82,7 @@ ThemeData darkMode = ThemeData(
   ),
 
   cardTheme: CardThemeData(
-    color: Color(0xFF3E3E49),
+    color: Color.fromARGB(255, 32, 32, 38),
     elevation: 8,
     shape: RoundedRectangleBorder(
       borderRadius: BorderRadius.all(Radius.circular(18)),
@@ -77,6 +94,13 @@ ThemeData darkMode = ThemeData(
   listTileTheme: const ListTileThemeData(
     iconColor: Colors.white,
     textColor: Colors.white,
+  ),
+  elevatedButtonTheme: ElevatedButtonThemeData(
+    style: ElevatedButton.styleFrom(
+      backgroundColor: Color(0xFF1F1F1F),
+      foregroundColor: Colors.white,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+    ),
   ),
 );
 

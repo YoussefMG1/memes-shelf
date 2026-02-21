@@ -34,7 +34,18 @@ class DisplayList extends StatelessWidget {
         title: pageTitle,
       ),
       drawer: MyDrawer(drawerNum),
-      body: AnimatedBuilder(
+      body: files.isEmpty
+          ? Center(
+              child: Text(
+                "This list is empty",
+                style: TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.w500,
+                  color: Theme.of(context).textTheme.bodyMedium?.color?.withOpacity(0.6),
+                ),
+              ),
+            )
+          : AnimatedBuilder(
         animation: controller,
         builder: (_, __) {
           return ListView.builder(

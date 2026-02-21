@@ -1,17 +1,21 @@
 import 'package:flutter/material.dart';
+import 'package:memetic_whats/themes/theme.dart';
 
-final ThemeData lightMode = ThemeData(
-  brightness: Brightness.light,
-  colorScheme: ColorScheme.light(primary: Colors.blue, surface: Colors.white),
-);
+// final ThemeData lightMode = ThemeData(
+//   brightness: Brightness.light,
+//   colorScheme: ColorScheme.light(primary: Colors.blue, surface: Colors.white,secondary: Colors.red),
+// );
 
-final ThemeData darkMode = ThemeData(
-  brightness: Brightness.dark,
-  colorScheme: ColorScheme.dark(
-    primary: Colors.blue,
-    surface: Colors.grey[900]!,
-  ),
-);
+// final ThemeData darkMode = ThemeData(
+//   brightness: Brightness.dark,
+//   colorScheme: ColorScheme.dark(
+//     // background: const Color(0xFF121212),
+//     primary: Colors.blue,
+//     // surface: Colors.grey[900]!,
+//     surface: const Color(0xFF121212),
+//     secondary: const Color.fromRGBO(48, 48, 48, 1)
+//   ),
+// );
 
 class ThemeProvider with ChangeNotifier {
   ThemeData _themeData = lightMode;

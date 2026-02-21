@@ -4,7 +4,7 @@ import 'package:provider/provider.dart';
 import 'package:memetic_whats/providers/API_testing.dart';
 import 'package:memetic_whats/providers/file_management_db.dart';
 import 'package:memetic_whats/themes/theme.dart';
-import 'package:memetic_whats/themes/theme_provider.dart';
+// import 'package:memetic_whats/themes/theme_provider.dart';
 import 'lists/recent_list.dart';
 
 void main() {
@@ -14,7 +14,7 @@ void main() {
         // ChangeNotifierProvider(create: (context) => FileProviderSP()),
         ChangeNotifierProvider(create: (context) => FileProvider()),
         ChangeNotifierProvider(create: (context) => ApiTesting()),
-        ChangeNotifierProvider(create: (context) => ThemeProvider()),
+        // ChangeNotifierProvider(create: (context) => ThemeProvider()),
       ],
       child: MyApp(),
     ),
@@ -31,11 +31,11 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       title: 'Memes Repo',
       // change theme by yourself in the app
-      theme: Provider.of<ThemeProvider>(context).myThemeData,
+      // theme: Provider.of<ThemeProvider>(context).myThemeData,
 
       // change theme by by system mode
-      // theme: lightMode,
-      // darkTheme: darkMode,
+      theme: lightMode,
+      darkTheme: darkMode,
       home: RecentList(),
     );
   }

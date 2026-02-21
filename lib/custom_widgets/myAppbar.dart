@@ -40,14 +40,14 @@ class Myappbar extends StatelessWidget implements PreferredSizeWidget {
                       PopupMenuItem(
                         child: Column(
                           children: [
-                            // ListTile(
-                            //   leading: Icon(Icons.share),
-                            //   title: Text("Share files"),
-                            //   onTap: () => fileProvider.shareMultipleFiles(
-                            //     itemsList,
-                            //     controller.selectedItems,
-                            //   ),
-                            // ),
+                            ListTile(
+                              leading: Icon(Icons.share),
+                              title: Text("Share files"),
+                              onTap: () => fileProvider.shareMultipleFiles(
+                                itemsList,
+                                controller.selectedItems,
+                              ),
+                            ),
                             ListTile(
                               leading: Icon(Icons.delete),
                               title: Text("Delete files"),
@@ -64,7 +64,7 @@ class Myappbar extends StatelessWidget implements PreferredSizeWidget {
                               leading: Icon(Icons.select_all),
                               title: Text("Select All"),
                               onTap: () {
-                                // controller.selectAll(itemsList);
+                                controller.selectAll(itemsList.length);
                               },
                             ),
                             ListTile(

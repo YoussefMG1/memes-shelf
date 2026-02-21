@@ -15,8 +15,8 @@ class SelectionController extends ChangeNotifier {
     }
     notifyListeners();
   }
-  void selectAll(List<String> items){
-    for (var i = 0; i < items.length; i++) {
+  void selectAll(int length){
+    for (var i = 0; i < length; i++) {
       _selectedItems.add(i);
     }
     notifyListeners();
