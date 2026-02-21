@@ -3,7 +3,6 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:open_file/open_file.dart';
 import 'package:provider/provider.dart';
-
 import '/controllers/selection_controller.dart';
 import '/custom_widgets/myAppbar.dart';
 import '/custom_widgets/my_drawer.dart';
@@ -316,7 +315,7 @@ class DisplayList extends StatelessWidget {
               //     controller.toggle(index);
               //   },
               // );
-            },
+            }
           );
         },
       ),
