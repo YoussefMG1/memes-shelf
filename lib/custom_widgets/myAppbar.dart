@@ -10,6 +10,8 @@ class Myappbar extends StatelessWidget implements PreferredSizeWidget {
   // final String itemsListName;
   final SelectionController controller;
   final String title;
+  final TextEditingController? searchController;
+final Function(String)? onSearchChanged;
   // final VoidCallback onDelete;//doesn't do anything now
 
   const Myappbar({
@@ -17,6 +19,9 @@ class Myappbar extends StatelessWidget implements PreferredSizeWidget {
     // required this.itemsListName,
     required this.controller,
     required this.title,
+    this.searchController,
+  this.onSearchChanged,
+  super.key,
     // required this.onDelete,
   });
 
@@ -27,9 +32,51 @@ class Myappbar extends StatelessWidget implements PreferredSizeWidget {
       animation: controller,
       builder: (_, __) {
         return AppBar(
+          toolbarHeight: controller.isSelectionMode ? kToolbarHeight : 100,
           title: controller.isSelectionMode
-              ? Text('${controller.count} selected')
-              : Text(title),
+    ? Text('${controller.count} selected')
+    : Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(title),
+
+          if (searchController != null)
+            Padding(
+              padding: const EdgeInsets.only(top: 6),
+              child: SizedBox(
+                height: 36,
+                child: TextField(
+                  controller: searchController,
+                  onChanged: onSearchChanged,
+                  decoration: InputDecoration(
+                    hintText: "Search in $title",
+                    hintStyle: TextStyle(
+                      color: Colors.white.withOpacity(0.6),
+                      fontSize: 13,
+                    ),
+                    prefixIcon: const Icon(
+                      Icons.search,
+                      size: 18,
+                      color: Colors.white70,
+                    ),
+                    contentPadding:
+                        const EdgeInsets.symmetric(vertical: 0),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(20),
+                      borderSide: BorderSide.none,
+                    ),
+                    filled: true,
+                    fillColor: Colors.white.withOpacity(0.15),
+                  ),
+                  style: const TextStyle(
+                    color: Colors.white,
+                    fontSize: 14,
+                  ),
+                ),
+              ),
+            ),
+        ],
+      ),
           leading: controller.isSelectionMode
               ? IconButton(icon: Icon(Icons.close), onPressed: controller.clear)
               : null,
@@ -90,5 +137,7 @@ class Myappbar extends StatelessWidget implements PreferredSizeWidget {
   }
 
   @override
-  Size get preferredSize => Size.fromHeight(kToolbarHeight);
+  Size get preferredSize => Size.fromHeight(
+  controller.isSelectionMode ? kToolbarHeight : 100,
+);
 }
