@@ -31,17 +31,12 @@ class MemeDatabase {
 
     log('Database Path: $path');
 
-    return await openDatabase(
-      path,
-      version: 1,
-      onCreate: _onCreate,
-    );
+    return await openDatabase(path, version: 1, onCreate: _onCreate);
   }
 
   /// ========= Create Tables =========
   Future<void> _onCreate(Database db, int version) async {
-    await db.execute(
-      '''
+    await db.execute('''
       CREATE TABLE IF NOT EXISTS $memesTable (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         path TEXT NOT NULL,
@@ -49,8 +44,7 @@ class MemeDatabase {
         type TEXT NOT NULL,
         isRecent INTEGER NOT NULL
       )
-      ''',
-    );
+      ''');
 
     log('Database Created');
   }
@@ -68,12 +62,7 @@ class MemeDatabase {
       INSERT INTO $memesTable (path, displayName, type, isRecent)
       VALUES (?, ?, ?, ?)
       ''',
-      [
-        file.path,
-        file.displayName,
-        file.type,
-        file.isRecent ? 1 : 0,
-      ],
+      [file.path, file.displayName, file.type, file.isRecent ? 1 : 0],
     );
 
     return id;
@@ -99,9 +88,7 @@ class MemeDatabase {
   Future<List<MemeFile>> getAllFiles() async {
     final db = await database;
 
-    final result = await db.rawQuery(
-      'SELECT * FROM $memesTable',
-    );
+    final result = await db.rawQuery('SELECT * FROM $memesTable');
 
     return result.map((e) => MemeFile.fromMap(e)).toList();
   }
@@ -129,7 +116,6 @@ class MemeDatabase {
     return result.map((e) => MemeFile.fromMap(e)).toList();
   }
 
-  
   /// Update
   Future<int> updateFile(MemeFile media) async {
     final db = await database;
@@ -145,10 +131,7 @@ class MemeDatabase {
   Future<int> deleteFile(int id) async {
     final db = await database;
 
-    return await db.rawDelete(
-      'DELETE FROM $memesTable WHERE id = ?',
-      [id],
-    );
+    return await db.rawDelete('DELETE FROM $memesTable WHERE id = ?', [id]);
   }
 
   /// Clear table
@@ -162,5 +145,25 @@ class MemeDatabase {
     final db = await database;
     await db.close();
     _database = null;
+  }
+
+  /// search by name
+  Future<List<MemeFile>> searchFiles(String query) async {
+    final db = await database;
+
+    if (query.trim().isEmpty) {
+      return await getAllFiles();
+    }
+
+    final result = await db.rawQuery(
+      '''
+    SELECT * FROM $memesTable
+    WHERE displayName LIKE ? COLLATE NOCASE
+    ORDER BY id DESC
+    ''',
+      ['%${query.trim()}%'],
+    );
+
+    return result.map((e) => MemeFile.fromMap(e)).toList();
   }
 }

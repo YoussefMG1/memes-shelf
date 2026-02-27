@@ -107,6 +107,7 @@ class FileProvider extends ChangeNotifier {
 
     return newFile;
   }
+
   Future<File> saveSharedFileLocally(SharedFile file) async {
     final appDir = await getApplicationDocumentsDirectory();
     final newPath = '${appDir.path}/${file.value!.split('/').last}';
@@ -115,7 +116,7 @@ class FileProvider extends ChangeNotifier {
 
     if (file.value != null) {
       await File(file.value!).copy(newPath);
-    } 
+    }
     return newFile;
   }
 
@@ -198,8 +199,24 @@ class FileProvider extends ChangeNotifier {
     ext = ext.toLowerCase();
 
     if (['jpg', 'png', 'jpeg'].contains(ext)) return 'image';
-    if (['mp3', 'wav', 'aac', 'opus','m4a'].contains(ext)) return 'audio';
+    if (['mp3', 'wav', 'aac', 'opus', 'm4a'].contains(ext)) return 'audio';
     if (['webp', 'gif'].contains(ext)) return 'sticker';
     return null;
+  }
+}
+
+class MemeProvider extends ChangeNotifier {
+  List<MemeFile> _memes = [];
+
+  List<MemeFile> get memes => _memes;
+
+  Future<void> loadMemes() async {
+    _memes = await MemeDatabase.instance.getAllFiles();
+    notifyListeners();
+  }
+
+  Future<void> searchMemes(String query) async {
+    _memes = await MemeDatabase.instance.searchFiles(query);
+    notifyListeners();
   }
 }
