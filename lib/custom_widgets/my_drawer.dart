@@ -4,7 +4,7 @@ import 'package:memetic_whats/lists/images_list.dart';
 import 'package:memetic_whats/lists/stickers_list.dart';
 import 'package:memetic_whats/lists/recent_list.dart';
 import 'package:memetic_whats/providers/file_management_db.dart';
-import 'package:memetic_whats/themes/theme_provider.dart';
+// import 'package:memetic_whats/themes/theme_provider.dart';
 import 'package:provider/provider.dart';
 
 // ignore: must_be_immutable
