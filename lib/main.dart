@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:memetic_whats/providers/searchMode.dart';
 import 'package:provider/provider.dart';
 
 import 'package:memetic_whats/providers/API_testing.dart';
@@ -14,7 +15,7 @@ void main() {
         // ChangeNotifierProvider(create: (context) => FileProviderSP()),
         ChangeNotifierProvider(create: (context) => FileProvider()),
         ChangeNotifierProvider(create: (context) => ApiTesting()),
-        // ChangeNotifierProvider(create: (context) => ThemeProvider()),
+        ChangeNotifierProvider(create: (context) => SearchProvider()),
       ],
       child: MyApp(),
     ),

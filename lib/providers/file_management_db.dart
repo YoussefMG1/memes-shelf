@@ -18,6 +18,7 @@ class FileProvider extends ChangeNotifier {
 
   /// Lists للـ UI
   List<MemeFile> images = [];
+  List<MemeFile> videos = [];
   List<MemeFile> audios = [];
   List<MemeFile> stickers = [];
   List<MemeFile> recent = [];
@@ -61,6 +62,7 @@ class FileProvider extends ChangeNotifier {
     images = _allFiles.where((f) => f.type == 'image').toList();
     audios = _allFiles.where((f) => f.type == 'audio').toList();
     stickers = _allFiles.where((f) => f.type == 'sticker').toList();
+    videos = _allFiles.where((f)=> f.type == 'video').toList();
     recent = _allFiles.where((f) => f.isRecent).toList();
   }
 
@@ -170,6 +172,13 @@ class FileProvider extends ChangeNotifier {
     MemeDatabase.instance.addFile(updated);
     await _loadFromDatabase();
   }
+  void removeFromRecent(MemeFile file) async {
+    final updated = file.copyWith(isRecent: false);
+    // await MemeDatabase.instance.updateFile(updated);
+    deleteFile(file);
+    MemeDatabase.instance.addFile(updated);
+    await _loadFromDatabase();
+  }
 
   void renameFile(MemeFile file, String newName) async {
     final updated = file.copyWith(displayName: newName);
@@ -201,22 +210,27 @@ class FileProvider extends ChangeNotifier {
     if (['jpg', 'png', 'jpeg'].contains(ext)) return 'image';
     if (['mp3', 'wav', 'aac', 'opus', 'm4a'].contains(ext)) return 'audio';
     if (['webp', 'gif'].contains(ext)) return 'sticker';
+    if (['mp4','avi','mkv','mov','wmv','flv','webm'].contains(ext)) return 'video';
     return null;
   }
-}
 
-class MemeProvider extends ChangeNotifier {
-  List<MemeFile> _memes = [];
-
-  List<MemeFile> get memes => _memes;
-
-  Future<void> loadMemes() async {
-    _memes = await MemeDatabase.instance.getAllFiles();
-    notifyListeners();
-  }
-
-  Future<void> searchMemes(String query) async {
-    _memes = await MemeDatabase.instance.searchFiles(query);
+  void updatedChanges(){
     notifyListeners();
   }
 }
+
+// class MemeProvider extends ChangeNotifier {
+//   List<MemeFile> _memes = [];
+
+//   List<MemeFile> get memes => _memes;
+
+//   Future<void> loadMemes() async {
+//     _memes = await MemeDatabase.instance.getAllFiles();
+//     notifyListeners();
+//   }
+
+//   Future<void> searchMemes(String query) async {
+//     _memes = await MemeDatabase.instance.searchFiles(query);
+//     notifyListeners();
+//   }
+// }

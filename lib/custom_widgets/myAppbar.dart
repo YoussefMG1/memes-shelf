@@ -1,7 +1,11 @@
+
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:memetic_whats/controllers/selection_controller.dart';
 import 'package:memetic_whats/models/meme_file.dart';
 import 'package:memetic_whats/providers/file_management_db.dart';
+import 'package:memetic_whats/providers/searchMode.dart';
 // import 'package:memetic_whats/providers/file_management_db.dart';
 import 'package:provider/provider.dart';
 
@@ -11,10 +15,12 @@ class Myappbar extends StatelessWidget implements PreferredSizeWidget {
   final SelectionController controller;
   final String title;
   final TextEditingController? searchController;
-final Function(String)? onSearchChanged;
+  final Function(String)? onSearchChanged;
+  
+
   // final VoidCallback onDelete;//doesn't do anything now
 
-  const Myappbar({
+  Myappbar({
     required this.itemsList,
     // required this.itemsListName,
     required this.controller,
@@ -28,6 +34,8 @@ final Function(String)? onSearchChanged;
   @override
   Widget build(BuildContext context) {
     final fileProvider = Provider.of<FileProvider>(context);
+    final searchProvider = Provider.of<SearchProvider>(context);
+    
     return AnimatedBuilder(
       animation: controller,
       builder: (_, __) {
@@ -35,48 +43,112 @@ final Function(String)? onSearchChanged;
           toolbarHeight: controller.isSelectionMode ? kToolbarHeight : 100,
           title: controller.isSelectionMode
     ? Text('${controller.count} selected')
-    : Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(title),
-
-          if (searchController != null)
-            Padding(
-              padding: const EdgeInsets.only(top: 6),
-              child: SizedBox(
-                height: 36,
-                child: TextField(
-                  controller: searchController,
-                  onChanged: onSearchChanged,
-                  decoration: InputDecoration(
-                    hintText: "Search in $title",
-                    hintStyle: TextStyle(
-                      color: Colors.white.withOpacity(0.6),
-                      fontSize: 13,
+    : searchProvider.SearchMode ?
+    Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Padding(
+          padding: const EdgeInsets.all(5.0),
+          child: SizedBox(
+                      height: 36,
+                      width: 200,
+                      child: TextField(
+                        controller: searchController,
+                        onChanged: onSearchChanged,
+                        decoration: InputDecoration(
+                          hintText: "Search in $title",
+                          hintStyle: TextStyle(
+                            // color: Colors.white.withOpacity(0.6),
+                            fontSize: 13,
+                          ),
+                          prefixIcon: const Icon(
+                            Icons.search,
+                            size: 18,
+                            // color: Colors.white70,
+                          ),
+                          contentPadding:
+                              const EdgeInsets.symmetric(vertical: 0),
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(20),
+                            borderSide: BorderSide.none,
+                          ),
+                          filled: true,
+                          // fillColor: Colors.white.withOpacity(0.15),
+                        ),
+                        style: const TextStyle(
+                          // color: Colors.white,
+                          fontSize: 14,
+                        ),
+                      ),
                     ),
-                    prefixIcon: const Icon(
-                      Icons.search,
-                      size: 18,
-                      color: Colors.white70,
-                    ),
-                    contentPadding:
-                        const EdgeInsets.symmetric(vertical: 0),
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(20),
-                      borderSide: BorderSide.none,
-                    ),
-                    filled: true,
-                    fillColor: Colors.white.withOpacity(0.15),
-                  ),
-                  style: const TextStyle(
-                    color: Colors.white,
-                    fontSize: 14,
-                  ),
-                ),
+        ),
+                  IconButton(
+                      
+                      onPressed: () {  
+                        searchProvider.searchOff();
+                        // log(inSearchMode.toString());
+                      }, icon: Icon(Icons.close),iconSize: 18,
+                      // color: Colors.white70,
+                    )
+      ],
+    ): 
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(title),
+                  IconButton(
+                      
+                      onPressed: () {  
+                        searchProvider.searchOn();
+                      }, icon: Icon(Icons.search),iconSize: 18,
+                      // color: Colors.white70,
+                    )
+                
+                
+                ],
               ),
-            ),
-        ],
-      ),
+    // : Column(
+    //     crossAxisAlignment: CrossAxisAlignment.start,
+    //     children: [
+    //       Text(title),
+
+    //       if (searchController != null)
+    //         Padding(
+    //           padding: const EdgeInsets.only(top: 6),
+    //           child: SizedBox(
+    //             height: 36,
+    //             child: TextField(
+    //               controller: searchController,
+    //               onChanged: onSearchChanged,
+    //               decoration: InputDecoration(
+    //                 hintText: "Search in $title",
+    //                 hintStyle: TextStyle(
+    //                   // color: Colors.white.withOpacity(0.6),
+    //                   fontSize: 13,
+    //                 ),
+    //                 prefixIcon: const Icon(
+    //                   Icons.search,
+    //                   size: 18,
+    //                   // color: Colors.white70,
+    //                 ),
+    //                 contentPadding:
+    //                     const EdgeInsets.symmetric(vertical: 0),
+    //                 border: OutlineInputBorder(
+    //                   borderRadius: BorderRadius.circular(20),
+    //                   borderSide: BorderSide.none,
+    //                 ),
+    //                 filled: true,
+    //                 // fillColor: Colors.white.withOpacity(0.15),
+    //               ),
+    //               style: const TextStyle(
+    //                 // color: Colors.white,
+    //                 fontSize: 14,
+    //               ),
+    //             ),
+    //           ),
+    //         ),
+    //     ],
+    //   ),
           leading: controller.isSelectionMode
               ? IconButton(icon: Icon(Icons.close), onPressed: controller.clear)
               : null,
@@ -130,7 +202,8 @@ final Function(String)? onSearchChanged;
                     ],
                   ),
                 ]
-              : [],
+              : 
+              [],
         );
       },
     );

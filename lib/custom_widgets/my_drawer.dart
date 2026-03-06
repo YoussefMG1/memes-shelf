@@ -3,6 +3,7 @@ import 'package:memetic_whats/lists/audio_list.dart';
 import 'package:memetic_whats/lists/images_list.dart';
 import 'package:memetic_whats/lists/stickers_list.dart';
 import 'package:memetic_whats/lists/recent_list.dart';
+import 'package:memetic_whats/lists/videos_list.dart';
 import 'package:memetic_whats/providers/file_management_db.dart';
 // import 'package:memetic_whats/themes/theme_provider.dart';
 import 'package:provider/provider.dart';
@@ -13,16 +14,18 @@ class MyDrawer extends StatelessWidget {
 
   MyDrawer(this.widgetNum, {super.key});
 
-  final List<String> titles = ["Recent", "Images", "Audios", "Stickers"];
+  final List<String> titles = ["Recent", "Images",'videos', "Audios", "Stickers"];
   final List<Widget> pages = [
     RecentList(),
     ImagesList(),
+    VideosList(),
     AudioList(),
     StickersList(),
   ];
   final List<String> imagesPath = [
     "assets/folder_icon.png",
     "assets/gallery.png",
+    "assets/video-icon.png",
     "assets/audio.png",
     "assets/file_icon.png",
   ];

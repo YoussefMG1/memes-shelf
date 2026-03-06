@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:open_file/open_file.dart';
@@ -10,12 +11,12 @@ import '/models/meme_file.dart';
 import '/providers/file_management_db.dart';
 import '/open_files/image_display.dart';
 
-class DisplayList extends StatefulWidget {
+class DisplayList extends StatelessWidget {
   final List<MemeFile> files;
   final String pageTitle;
   final int drawerNum;
 
-  const DisplayList({
+  DisplayList({
     required this.pageTitle,
     required this.files,
     required this.drawerNum,
@@ -23,36 +24,34 @@ class DisplayList extends StatefulWidget {
   });
 
   @override
-  State<DisplayList> createState() => _DisplayListState();
-}
 
-class _DisplayListState extends State<DisplayList> {
-   final SelectionController controller = SelectionController();
+  final SelectionController controller = SelectionController();
   final TextEditingController searchController = TextEditingController();
 
-  
   @override
   Widget build(BuildContext context) {
     final fileProvider = Provider.of<FileProvider>(context);
     final displayedFiles = searchController.text.isEmpty
-    ? widget.files
-    : widget.files
-        .where((file) => file.displayName
-            .toLowerCase()
-            .contains(searchController.text.toLowerCase()))
-        .toList();
+        ? files
+        : files
+              .where(
+                (file) => file.displayName.toLowerCase().contains(
+                  searchController.text.toLowerCase(),
+                ),
+              )
+              .toList();
     return Scaffold(
       backgroundColor: Theme.of(context).colorScheme.background,
       appBar: Myappbar(
-        itemsList: widget.files,
+        itemsList: files,
         controller: controller,
-        title: widget.pageTitle,
+        title: pageTitle,
         searchController: searchController,
-onSearchChanged: (value) {
-  setState(() {});
-},
+        onSearchChanged: (value) {
+          // setState(() {});
+        },
       ),
-      drawer: MyDrawer(widget.drawerNum),
+      drawer: MyDrawer(drawerNum),
       body: displayedFiles.isEmpty
           ? Center(
               child: Text(
@@ -74,7 +73,7 @@ onSearchChanged: (value) {
                   itemBuilder: (_, i) {
                     int index = displayedFiles.length - 1 - i;
                     final file = displayedFiles[index];
-                    final selected =controller.isSelected(file.id!);
+                    final selected = controller.isSelected(index);///////////////
                     bool exist = File(file.path).existsSync();
                     if (!exist) {
                       return TextButton(
@@ -110,9 +109,15 @@ onSearchChanged: (value) {
                           child: SizedBox(
                             width: MediaQuery.of(context).size.width * 0.15,
                             height: MediaQuery.of(context).size.width * 0.15,
-                            child: ['image', 'sticker'].contains(file.type)
+                            child: ['image', 'sticker',].contains(file.type)
                                 ? Image.file(File(file.path), fit: BoxFit.cover)
-                                : Image.asset(
+                                :  file.type =='video'?
+
+                                Image.asset(
+                                    "assets/video-icon.png",
+                                    fit: BoxFit.cover,
+                                  ):
+                                Image.asset(
                                     "assets/audio.png",
                                     fit: BoxFit.cover,
                                   ),
@@ -136,7 +141,7 @@ onSearchChanged: (value) {
                         trailing: controller.isSelectionMode
                             ? Checkbox(
                                 value: selected,
-                                onChanged: (_) => controller.toggle(file.id!),
+                                onChanged: (_) => controller.toggle(index),
                               )
                             : PopupMenuButton(
                                 itemBuilder: (_) => [
@@ -204,6 +209,25 @@ onSearchChanged: (value) {
                                             );
                                           },
                                         ),
+                                        (fileProvider.recent.contains(file))?
+
+                                        ListTile(
+                                          leading: const Icon(Icons.delete),
+                                          title: const Text("Remove from recent"),
+                                          onTap: () {
+                                            Navigator.pop(context);
+                                            fileProvider.removeFromRecent(file);
+                                          },
+                                        ): 
+                                        ListTile(
+                                          leading: const Icon(Icons.add),
+                                          title: const Text("Add to recent"),
+                                          onTap: () {
+                                            Navigator.pop(context);
+                                            fileProvider.addToRecent(file);
+                                          },
+                                        ),
+                                        
                                         ListTile(
                                           leading: const Icon(Icons.delete),
                                           title: const Text("Delete file"),
@@ -237,119 +261,14 @@ onSearchChanged: (value) {
                           }
                         },
 
-                        onLongPress: () => controller.toggle(index),
+                        onLongPress: () {
+                         controller.toggle(index);
+                        //  log(index.toString());
+                        //  log(file.id!.toString());
+                        }
                       ),
                     );
 
-                    // return ListTile(
-                    //   // tileColor: Colors.blue[400],
-                    //   title: Text(file.displayName),
-                    //   leading: ['image', 'sticker'].contains(file.type)
-                    //       ? SizedBox(height: 80, child: Image.file(File(file.path)))
-                    //       : SizedBox(
-                    //           height: 80,
-                    //           child: Image.asset("assets/audio.png"),
-                    //         ),
-                    //   trailing: controller.isSelectionMode
-                    //       ? Checkbox(
-                    //           value: selected,
-                    //           onChanged: (_) => controller.toggle(i),
-                    //         )
-                    //       : PopupMenuButton(
-                    //           itemBuilder: (_) => [
-                    //             PopupMenuItem(
-                    //               child: Column(
-                    //                 children: [
-                    //                   ListTile(
-                    //                     leading: Icon(Icons.play_arrow),
-                    //                     title: Text("Open file"),
-                    //                     onTap: () => OpenFile.open(file.path),
-                    //                   ),
-                    //                   ListTile(
-                    //                     leading: Icon(Icons.share),
-                    //                     title: Text("Share file"),
-                    //                     onTap: () =>
-                    //                         fileProvider.shareSingleFile(file),
-                    //                   ),
-                    //                   ListTile(
-                    //                     leading: Icon(Icons.text_rotation_none_sharp),
-                    //                     title: Text("Rename file"),
-                    //                     onTap: () {
-                    //                       final textController =
-                    //                           TextEditingController();
-                    //                       showDialog(
-                    //                         context: context,
-                    //                         builder: (context) => AlertDialog(
-                    //                           title: Text("Rename file"),
-                    //                           content: TextField(
-                    //                             controller: textController,
-                    //                             decoration: InputDecoration(
-                    //                               hintText: "Enter new name",
-                    //                             ),
-                    //                           ),
-                    //                           actions: [
-                    //                             TextButton(
-                    //                               onPressed: () =>
-                    //                                   Navigator.pop(context),
-                    //                               child: Text("Cancel"),
-                    //                             ),
-                    //                             ElevatedButton(
-                    //                               onPressed: () {
-                    //                                 String newName =
-                    //                                     textController.text;
-                    //                                 if (newName.isNotEmpty) {
-                    //                                   // Call your rename function here
-                    //                                   fileProvider.renameFile(
-                    //                                     file,
-                    //                                     newName,
-                    //                                   );
-                    //                                   Navigator.pop(context);
-                    //                                 }
-                    //                               },
-                    //                               child: Text("Change name"),
-                    //                             ),
-                    //                           ],
-                    //                         ),
-                    //                       );
-                    //                       // fileProvider.shareSingleFile(file);
-                    //                     },
-                    //                   ),
-                    //                   ListTile(
-                    //                     leading: Icon(Icons.delete),
-                    //                     title: Text("Delete file"),
-                    //                     onTap: () {
-                    //                       Navigator.pop(context);
-                    //                       fileProvider.deleteFile(file);
-                    //                     },
-                    //                   ),
-                    //                 ],
-                    //               ),
-                    //               // onTap: () => OpenFilex.open(filePath),
-                    //             ),
-                    //           ],
-                    //         ),
-
-                    //   onTap: () {
-                    //     if (controller.isSelectionMode) {
-                    //       controller.toggle(index);
-                    //     } else {
-                    //       fileProvider.addToRecent(file);
-                    //       if (['image', 'sticker'].contains(file.type)) {
-                    //         Navigator.push(
-                    //           context,
-                    //           MaterialPageRoute(
-                    //             builder: (context) => ImageDisplay(File(file.path)),
-                    //           ),
-                    //         );
-                    //       } else{
-                    //         OpenFile.open(file.path);
-                    //       }
-                    //     }
-                    //   },
-                    //   onLongPress: () {
-                    //     controller.toggle(index);
-                    //   },
-                    // );
                   },
                 );
               },
